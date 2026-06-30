@@ -1,509 +1,486 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Controle Financeiro</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Financeiro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      color: #333;
-    }
+body{
+  background:#0f0f14;
+  color:#fff;
+  padding:15px;
+}
 
-    header {
-      background: linear-gradient(135deg, #1a73e8, #0d47a1);
-      color: white;
-      padding: 20px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.container{
+  max-width:500px;
+  margin:auto;
+}
 
-    header h1 { font-size: 1.5rem; }
+h1{
+  text-align:center;
+  margin-bottom:15px;
+  color:#b983ff;
+}
 
-    #mes-selector {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
-      background: white;
-      color: #333;
-      cursor: pointer;
-    }
+.card{
+  background:#1a1a24;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
 
-    .container {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
+.topo{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 30px;
-    }
+select,input,button{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border:none;
+  border-radius:8px;
+  background:#2a2a35;
+  color:#fff;
+}
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      text-align: center;
-    }
+button{
+  background:#7c3aed;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .card h3 { font-size: 0.9rem; color: #888; margin-bottom: 8px; }
-    .card p  { font-size: 1.6rem; font-weight: bold; }
-    .card.receita p { color: #2e7d32; }
-    .card.despesa p { color: #c62828; }
-    .card.saldo   p { color: #1565c0; }
+button:hover{
+  background:#6d28d9;
+}
 
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
+.saldo{
+  font-size:22px;
+  font-weight:bold;
+  text-align:center;
+}
 
-    @media (max-width: 700px) {
-      .main-grid { grid-template-columns: 1fr; }
-    }
+.receitas{ color:#22c55e; }
+.despesas{ color:#ef4444; }
 
-    .box {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+.cards{
+  display:flex;
+  gap:10px;
+}
 
-    .box h2 { font-size: 1rem; margin-bottom: 16px; color: #555; }
+.cards .card{
+  flex:1;
+  text-align:center;
+}
 
-    form input, form select {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: #fafafa;
-    }
+.lista{ margin-top:10px; }
 
-    form button {
-      width: 100%;
-      padding: 11px;
-      background: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+.item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#2a2a35;
+  padding:10px;
+  border-radius:8px;
+  margin-top:8px;
+}
 
-    form button:hover { background: #1558b0; }
+.item-info{ flex:1; cursor:pointer; }
 
-    #lista-lancamentos { list-style: none; }
+.valorReceita{ color:#22c55e; font-weight:bold; }
+.valorDespesa{ color:#ef4444; font-weight:bold; }
 
-    #lista-lancamentos li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      background: #f9f9f9;
-      border-left: 4px solid;
-    }
+.excluir{
+  background:red;
+  border:none;
+  color:white;
+  padding:5px 8px;
+  border-radius:6px;
+  cursor:pointer;
+  width:auto;
+  margin-top:0;
+  margin-left:8px;
+}
 
-    #lista-lancamentos li.receita { border-color: #2e7d32; }
-    #lista-lancamentos li.despesa { border-color: #c62828; }
+canvas{ margin-top:15px; }
 
-    .li-info { flex: 1; }
-    .li-valor { font-weight: bold; margin: 0 12px; white-space: nowrap; }
-    .li-acoes button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-left: 4px;
-      transition: opacity 0.2s;
-    }
-    .li-acoes button:hover { opacity: 0.6; }
+#loading{
+  text-align:center;
+  padding:20px;
+  color:#b983ff;
+}
 
-    #loading {
-      text-align: center;
-      padding: 20px;
-      color: #888;
-      font-size: 0.95rem;
-    }
+.empty{
+  text-align:center;
+  color:#666;
+  padding:15px 0;
+  font-size:0.9rem;
+}
 
-    .empty { text-align: center; color: #aaa; padding: 20px 0; font-size: 0.9rem; }
+/* Modal */
+.modal-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+}
 
-    /* Modal de edição */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
+.modal-overlay.open{ display:flex; }
 
-    .modal {
-      background: white;
-      border-radius: 12px;
-      padding: 28px;
-      width: 90%;
-      max-width: 420px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    }
+.modal{
+  background:#1a1a24;
+  border-radius:12px;
+  padding:24px;
+  width:90%;
+  max-width:400px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
 
-    .modal h2 { margin-bottom: 16px; font-size: 1.1rem; color: #333; }
+.modal h3{
+  margin-bottom:10px;
+  color:#b983ff;
+}
 
-    .modal button.cancelar {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      background: #eee;
-      color: #333;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-  </style>
+.modal .cancelar{
+  background:#2a2a35;
+  margin-top:8px;
+}
+
+.modal .cancelar:hover{
+  background:#3a3a45;
+}
+</style>
 </head>
+
 <body>
-
-<header>
-  <h1>💰 Controle Financeiro</h1>
-  <select id="mes-selector"></select>
-</header>
-
 <div class="container">
+
+  <h1>💰 Controle Financeiro</h1>
+
   <div id="loading">🔄 Conectando ao Firebase...</div>
 
   <div id="app-content" style="display:none">
+
+    <!-- Saldo + Mês -->
+    <div class="card">
+      <div class="topo">
+        <label>Mês</label>
+        <select id="mes" style="width:auto"></select>
+      </div>
+      <div class="saldo" id="saldoTotal">R$ 0,00</div>
+    </div>
+
+    <!-- Receitas / Despesas -->
     <div class="cards">
-      <div class="card receita">
-        <h3>Total Receitas</h3>
-        <p id="total-receitas">R$ 0,00</p>
+      <div class="card">
+        <h3>Receitas</h3>
+        <div class="receitas" id="totalReceitas">R$ 0,00</div>
       </div>
-      <div class="card despesa">
-        <h3>Total Despesas</h3>
-        <p id="total-despesas">R$ 0,00</p>
-      </div>
-      <div class="card saldo">
-        <h3>Saldo</h3>
-        <p id="saldo">R$ 0,00</p>
+      <div class="card">
+        <h3>Despesas</h3>
+        <div class="despesas" id="totalDespesas">R$ 0,00</div>
       </div>
     </div>
 
-    <div class="main-grid">
-      <div class="box">
-        <h2>➕ Novo Lançamento</h2>
-        <form id="form-lancamento">
-          <input type="text" id="descricao" placeholder="Descrição" required />
-          <input type="number" id="valor" placeholder="Valor (R$)" step="0.01" min="0.01" required />
-          <select id="tipo">
-            <option value="receita">Receita</option>
-            <option value="despesa">Despesa</option>
-          </select>
-          <select id="categoria">
-            <option value="Alimentação">Alimentação</option>
-            <option value="Transporte">Transporte</option>
-            <option value="Saúde">Saúde</option>
-            <option value="Lazer">Lazer</option>
-            <option value="Salário">Salário</option>
-            <option value="Freelance">Freelance</option>
-            <option value="Outros">Outros</option>
-          </select>
-          <input type="date" id="data" required />
-          <button type="submit">Adicionar</button>
-        </form>
-      </div>
-
-      <div class="box">
-        <h2>📊 Por Categoria</h2>
-        <canvas id="grafico-categorias"></canvas>
-      </div>
+    <!-- Formulário -->
+    <div class="card">
+      <h3>➕ Adicionar Lançamento</h3>
+      <form id="form-lancamento">
+        <input type="date" id="data">
+        <input type="text" id="descricao" placeholder="Descrição" required>
+        <input type="number" id="valor" placeholder="Valor" step="0.01" min="0.01" required>
+        <select id="categoria">
+          <option>Alimentação</option>
+          <option>Transporte</option>
+          <option>Moradia</option>
+          <option>Saúde</option>
+          <option>Lazer</option>
+          <option>Salário</option>
+          <option>Freelance</option>
+          <option>Outros</option>
+        </select>
+        <select id="tipo">
+          <option value="receita">Receita</option>
+          <option value="despesa">Despesa</option>
+        </select>
+        <button type="submit">Adicionar</button>
+      </form>
     </div>
 
-    <div class="box" style="margin-top: 24px;">
-      <h2>📋 Lançamentos do Mês</h2>
-      <ul id="lista-lancamentos"></ul>
+    <!-- Lista + Gráfico -->
+    <div class="card">
+      <h3>📋 Lançamentos</h3>
+      <div class="lista" id="lista"></div>
+      <canvas id="grafico"></canvas>
     </div>
+
   </div>
 </div>
 
-<!-- Modal de edição -->
+<!-- Modal Edição -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
-    <h2>✏️ Editar Lançamento</h2>
-    <input type="hidden" id="edit-id" />
-    <input type="text" id="edit-descricao" placeholder="Descrição" required />
-    <input type="number" id="edit-valor" placeholder="Valor (R$)" step="0.01" min="0.01" required />
+    <h3>✏️ Editar Lançamento</h3>
+    <input type="hidden" id="edit-id">
+    <input type="date" id="edit-data">
+    <input type="text" id="edit-descricao" placeholder="Descrição">
+    <input type="number" id="edit-valor" placeholder="Valor" step="0.01">
+    <select id="edit-categoria">
+      <option>Alimentação</option>
+      <option>Transporte</option>
+      <option>Moradia</option>
+      <option>Saúde</option>
+      <option>Lazer</option>
+      <option>Salário</option>
+      <option>Freelance</option>
+      <option>Outros</option>
+    </select>
     <select id="edit-tipo">
       <option value="receita">Receita</option>
       <option value="despesa">Despesa</option>
     </select>
-    <select id="edit-categoria">
-      <option value="Alimentação">Alimentação</option>
-      <option value="Transporte">Transporte</option>
-      <option value="Saúde">Saúde</option>
-      <option value="Lazer">Lazer</option>
-      <option value="Salário">Salário</option>
-      <option value="Freelance">Freelance</option>
-      <option value="Outros">Outros</option>
-    </select>
-    <input type="date" id="edit-data" required />
     <button onclick="salvarEdicao()">💾 Salvar</button>
     <button class="cancelar" onclick="fecharModal()">Cancelar</button>
   </div>
 </div>
 
-<!-- Firebase SDK (compat via CDN - sem npm necessário) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-  // ===================== FIREBASE CONFIG =====================
-  const firebaseConfig = {
-    apiKey: "AIzaSyDZOBMaeSISkVf9_NCfcY-C8J1Mb4r4ncc",
-    authDomain: "controle-financeiro-rural.firebaseapp.com",
-    projectId: "controle-financeiro-rural",
-    storageBucket: "controle-financeiro-rural.firebasestorage.app",
-    messagingSenderId: "280064239916",
-    appId: "1:280064239916:web:a14267e58e5d37c5ce6489"
+// ============ FIREBASE ============
+const firebaseConfig = {
+  apiKey: "AIzaSyDZOBMaeSISkVf9_NCfcY-C8J1Mb4r4ncc",
+  authDomain: "controle-financeiro-rural.firebaseapp.com",
+  projectId: "controle-financeiro-rural",
+  storageBucket: "controle-financeiro-rural.firebasestorage.app",
+  messagingSenderId: "280064239916",
+  appId: "1:280064239916:web:a14267e58e5d37c5ce6489"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const colecao = db.collection("lancamentos");
+
+// ============ MÊS SELECTOR ============
+const mesEl = document.getElementById("mes");
+const hoje = new Date();
+
+for(let i = 0; i < 12; i++){
+  const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+  const valor = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  const label = d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const opt = document.createElement('option');
+  opt.value = valor;
+  opt.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+  mesEl.appendChild(opt);
+}
+
+document.getElementById("data").value = hoje.toISOString().split('T')[0];
+
+let mesSelecionado = mesEl.value;
+let unsubscribe = null;
+let grafico = null;
+let lancamentosCache = [];
+
+mesEl.addEventListener("change", () => {
+  mesSelecionado = mesEl.value;
+  assinarLancamentos();
+});
+
+// ============ LISTENER TEMPO REAL ============
+function assinarLancamentos(){
+  if(unsubscribe) unsubscribe();
+
+  const [ano, mes] = mesSelecionado.split('-');
+  const inicio = new Date(ano, mes-1, 1).toISOString().split('T')[0];
+  const fim    = new Date(ano, mes,   1).toISOString().split('T')[0];
+
+  unsubscribe = colecao
+    .where('data', '>=', inicio)
+    .where('data', '<',  fim)
+    .orderBy('data', 'desc')
+    .onSnapshot(snapshot => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('app-content').style.display = 'block';
+
+      const lista = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      lancamentosCache = lista;
+      renderizar(lista);
+    }, err => {
+      console.error(err);
+      document.getElementById('loading').textContent = '❌ Erro ao conectar. Verifique o Firestore.';
+    });
+}
+
+assinarLancamentos();
+
+// Cache global para modal (todos os docs)
+colecao.onSnapshot(snap => {
+  lancamentosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+});
+
+// ============ RENDERIZAR ============
+function renderizar(lancamentos){
+  let receitas = 0, despesas = 0;
+  const categorias = {};
+  const listaEl = document.getElementById("lista");
+  listaEl.innerHTML = "";
+
+  if(lancamentos.length === 0){
+    listaEl.innerHTML = '<p class="empty">Nenhum lançamento neste mês.</p>';
+  }
+
+  lancamentos.forEach(l => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="item-info" onclick="abrirModal('${l.id}')">
+        ${l.data ? formatarData(l.data) + ' — ' : ''}${l.descricao}<br>
+        <small>${l.categoria}</small>
+      </div>
+      <span class="${l.tipo === 'receita' ? 'valorReceita' : 'valorDespesa'}">
+        ${l.tipo === 'receita' ? '+' : '-'}${fmt(l.valor)}
+      </span>
+      <button class="excluir" onclick="excluir('${l.id}')">✕</button>
+    `;
+    listaEl.appendChild(div);
+
+    if(l.tipo === 'receita'){
+      receitas += l.valor;
+    } else {
+      despesas += l.valor;
+      categorias[l.categoria] = (categorias[l.categoria] || 0) + l.valor;
+    }
+  });
+
+  const saldo = receitas - despesas;
+  document.getElementById("totalReceitas").textContent = fmt(receitas);
+  document.getElementById("totalDespesas").textContent = fmt(despesas);
+  const saldoEl = document.getElementById("saldoTotal");
+  saldoEl.textContent = fmt(saldo);
+  saldoEl.style.color = saldo >= 0 ? "#22c55e" : "#ef4444";
+
+  desenharGrafico(categorias);
+}
+
+// ============ GRÁFICO ============
+function desenharGrafico(categorias){
+  const ctx = document.getElementById("grafico");
+  if(grafico) grafico.destroy();
+
+  if(Object.keys(categorias).length === 0) return;
+
+  grafico = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: Object.keys(categorias),
+      datasets: [{
+        data: Object.values(categorias),
+        backgroundColor: ['#7c3aed','#ef4444','#22c55e','#f59e0b','#3b82f6','#ec4899','#14b8a6']
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { labels: { color: "#fff" } }
+      }
+    }
+  });
+}
+
+// ============ ADICIONAR ============
+document.getElementById("form-lancamento").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const lancamento = {
+    data:      document.getElementById("data").value,
+    descricao: document.getElementById("descricao").value.trim(),
+    valor:     parseFloat(document.getElementById("valor").value),
+    categoria: document.getElementById("categoria").value,
+    tipo:      document.getElementById("tipo").value,
+    criadoEm:  firebase.firestore.FieldValue.serverTimestamp()
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const colecao = db.collection("lancamentos");
-
-  // ===================== MÊS SELECTOR =====================
-  const mesSelector = document.getElementById('mes-selector');
-  const hoje = new Date();
-
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
-    const valor = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    const label = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    const opt = document.createElement('option');
-    opt.value = valor;
-    opt.textContent = label.charAt(0).toUpperCase() + label.slice(1);
-    mesSelector.appendChild(opt);
+  try {
+    await colecao.add(lancamento);
+    e.target.reset();
+    document.getElementById("data").value = hoje.toISOString().split('T')[0];
+  } catch(err){
+    alert("Erro ao salvar: " + err.message);
   }
+});
 
-  // Data padrão no formulário
-  document.getElementById('data').value = hoje.toISOString().split('T')[0];
+// ============ EXCLUIR ============
+async function excluir(id){
+  if(!confirm("Excluir este lançamento?")) return;
+  await colecao.doc(id).delete();
+}
 
-  let mesSelecionado = mesSelector.value;
-  let unsubscribe = null;
-  let chartInstance = null;
+// ============ MODAL EDIÇÃO ============
+function abrirModal(id){
+  const l = lancamentosCache.find(x => x.id === id);
+  if(!l) return;
 
-  mesSelector.addEventListener('change', () => {
-    mesSelecionado = mesSelector.value;
-    assinarLancamentos();
-  });
+  document.getElementById("edit-id").value        = id;
+  document.getElementById("edit-data").value      = l.data;
+  document.getElementById("edit-descricao").value = l.descricao;
+  document.getElementById("edit-valor").value     = l.valor;
+  document.getElementById("edit-categoria").value = l.categoria;
+  document.getElementById("edit-tipo").value      = l.tipo;
 
-  // ===================== LISTENER TEMPO REAL =====================
-  function assinarLancamentos() {
-    if (unsubscribe) unsubscribe(); // cancela listener anterior
+  document.getElementById("modal-overlay").classList.add("open");
+}
 
-    const [ano, mes] = mesSelecionado.split('-');
-    const inicio = new Date(ano, mes - 1, 1);
-    const fim    = new Date(ano, mes, 1);
+function fecharModal(){
+  document.getElementById("modal-overlay").classList.remove("open");
+}
 
-    unsubscribe = colecao
-      .where('data', '>=', inicio.toISOString().split('T')[0])
-      .where('data', '<',  fim.toISOString().split('T')[0])
-      .orderBy('data', 'desc')
-      .onSnapshot(snapshot => {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('app-content').style.display = 'block';
+async function salvarEdicao(){
+  const id = document.getElementById("edit-id").value;
+  const atualizado = {
+    data:      document.getElementById("edit-data").value,
+    descricao: document.getElementById("edit-descricao").value.trim(),
+    valor:     parseFloat(document.getElementById("edit-valor").value),
+    categoria: document.getElementById("edit-categoria").value,
+    tipo:      document.getElementById("edit-tipo").value,
+  };
 
-        const lancamentos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderizarTudo(lancamentos);
-      }, err => {
-        console.error(err);
-        document.getElementById('loading').textContent = '❌ Erro ao conectar. Verifique o Firestore.';
-      });
+  try {
+    await colecao.doc(id).update(atualizado);
+    fecharModal();
+  } catch(err){
+    alert("Erro ao editar: " + err.message);
   }
+}
 
-  assinarLancamentos();
+document.getElementById("modal-overlay").addEventListener("click", e => {
+  if(e.target === e.currentTarget) fecharModal();
+});
 
-  // ===================== RENDERIZAÇÃO =====================
-  function renderizarTudo(lancamentos) {
-    renderizarCards(lancamentos);
-    renderizarLista(lancamentos);
-    renderizarGrafico(lancamentos);
-  }
+// ============ HELPERS ============
+function fmt(v){
+  return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+}
 
-  function renderizarCards(lancamentos) {
-    const receitas  = lancamentos.filter(l => l.tipo === 'receita').reduce((s, l) => s + l.valor, 0);
-    const despesas  = lancamentos.filter(l => l.tipo === 'despesa').reduce((s, l) => s + l.valor, 0);
-    const saldo     = receitas - despesas;
-
-    document.getElementById('total-receitas').textContent = fmt(receitas);
-    document.getElementById('total-despesas').textContent = fmt(despesas);
-    document.getElementById('saldo').textContent          = fmt(saldo);
-  }
-
-  function renderizarLista(lancamentos) {
-    const ul = document.getElementById('lista-lancamentos');
-    ul.innerHTML = '';
-
-    if (lancamentos.length === 0) {
-      ul.innerHTML = '<p class="empty">Nenhum lançamento neste mês.</p>';
-      return;
-    }
-
-    lancamentos.forEach(l => {
-      const li = document.createElement('li');
-      li.className = l.tipo;
-      li.innerHTML = `
-        <div class="li-info">
-          <strong>${l.descricao}</strong><br>
-          <small>${l.categoria} • ${formatarData(l.data)}</small>
-        </div>
-        <span class="li-valor ${l.tipo === 'receita' ? 'style="color:#2e7d32"' : 'style="color:#c62828"'}">
-          ${l.tipo === 'receita' ? '+' : '-'} ${fmt(l.valor)}
-        </span>
-        <div class="li-acoes">
-          <button title="Editar"  onclick="abrirModal('${l.id}')">✏️</button>
-          <button title="Excluir" onclick="excluir('${l.id}')">🗑️</button>
-        </div>
-      `;
-      ul.appendChild(li);
-    });
-  }
-
-  function renderizarGrafico(lancamentos) {
-    const categorias = {};
-    lancamentos.forEach(l => {
-      categorias[l.categoria] = (categorias[l.categoria] || 0) + l.valor;
-    });
-
-    const labels = Object.keys(categorias);
-    const data   = Object.values(categorias);
-    const cores  = ['#1a73e8','#e53935','#43a047','#fb8c00','#8e24aa','#00acc1','#f4511e'];
-
-    const ctx = document.getElementById('grafico-categorias').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-
-    if (labels.length === 0) {
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      return;
-    }
-
-    chartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data, backgroundColor: cores.slice(0, labels.length), borderWidth: 2 }]
-      },
-      options: {
-        plugins: { legend: { position: 'bottom' } },
-        responsive: true
-      }
-    });
-  }
-
-  // ===================== FORMULÁRIO =====================
-  document.getElementById('form-lancamento').addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const lancamento = {
-      descricao: document.getElementById('descricao').value.trim(),
-      valor:     parseFloat(document.getElementById('valor').value),
-      tipo:      document.getElementById('tipo').value,
-      categoria: document.getElementById('categoria').value,
-      data:      document.getElementById('data').value,
-      criadoEm:  firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    try {
-      await colecao.add(lancamento);
-      e.target.reset();
-      document.getElementById('data').value = hoje.toISOString().split('T')[0];
-    } catch (err) {
-      alert('Erro ao salvar: ' + err.message);
-    }
-  });
-
-  // ===================== EXCLUIR =====================
-  async function excluir(id) {
-    if (!confirm('Excluir este lançamento?')) return;
-    await colecao.doc(id).delete();
-  }
-
-  // ===================== MODAL EDIÇÃO =====================
-  let lancamentosCache = [];
-
-  // Guarda cache para o modal
-  colecao.onSnapshot(snap => {
-    lancamentosCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  });
-
-  function abrirModal(id) {
-    const l = lancamentosCache.find(x => x.id === id);
-    if (!l) return;
-
-    document.getElementById('edit-id').value        = id;
-    document.getElementById('edit-descricao').value = l.descricao;
-    document.getElementById('edit-valor').value     = l.valor;
-    document.getElementById('edit-tipo').value      = l.tipo;
-    document.getElementById('edit-categoria').value = l.categoria;
-    document.getElementById('edit-data').value      = l.data;
-
-    document.getElementById('modal-overlay').classList.add('open');
-  }
-
-  function fecharModal() {
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
-
-  async function salvarEdicao() {
-    const id = document.getElementById('edit-id').value;
-    const atualizado = {
-      descricao: document.getElementById('edit-descricao').value.trim(),
-      valor:     parseFloat(document.getElementById('edit-valor').value),
-      tipo:      document.getElementById('edit-tipo').value,
-      categoria: document.getElementById('edit-categoria').value,
-      data:      document.getElementById('edit-data').value,
-    };
-
-    try {
-      await colecao.doc(id).update(atualizado);
-      fecharModal();
-    } catch (err) {
-      alert('Erro ao editar: ' + err.message);
-    }
-  }
-
-  // Fechar modal clicando fora
-  document.getElementById('modal-overlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) fecharModal();
-  });
-
-  // ===================== HELPERS =====================
-  function fmt(v) {
-    return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-
-  function formatarData(dataStr) {
-    const [a, m, d] = dataStr.split('-');
-    return `${d}/${m}/${a}`;
-  }
+function formatarData(str){
+  const [a,m,d] = str.split('-');
+  return `${d}/${m}/${a}`;
+}
 </script>
 </body>
 </html>
