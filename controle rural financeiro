@@ -354,7 +354,7 @@
     <h3>⚠️ Excluir Lançamento?</h3>
     <p>Esta ação não pode ser desfeita. Tem certeza?</p>
     <div class="btn-row">
-      <button class="btn btn-danger" onclick="confirmarDelete()">Sim, excluir</button>
+      <button class="btn btn-danger" id="btnConfirmarDel">Sim, excluir</button>
       <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
     </div>
   </div>
@@ -404,6 +404,26 @@ const CAT_SAIDA   = ['Diesel','Gasolina','Luz','Água','Internet','Recarga Celul
 let lancamentos = [];
 let editandoId  = null;
 let deletandoId = null;
+
+// ══════════════════════════
+//  BOTÃO CONFIRMAR DELETE (via addEventListener — sem onclick no HTML)
+// ══════════════════════════
+document.getElementById('btnConfirmarDel').addEventListener('click', async function () {
+  const idParaDeletar = deletandoId;
+  fecharModal();
+  if (!idParaDeletar) return;
+  showLoading('Excluindo...');
+  try {
+    await colecao.doc(idParaDeletar).delete();
+    toast('🗑️ Lançamento excluído!', '#c62828');
+    renderLancamentos();
+  } catch (err) {
+    toast('❌ Erro ao excluir: ' + err.message, '#c62828');
+    console.error(err);
+  } finally {
+    hideLoading();
+  }
+});
 
 // ══════════════════════════
 //  LISTENER TEMPO REAL
@@ -549,7 +569,7 @@ function editarLancamento(firestoreId) {
 }
 
 // ══════════════════════════
-//  EXCLUSÃO — CORRIGIDO
+//  EXCLUSÃO
 // ══════════════════════════
 function excluirLancamento(firestoreId) {
   deletandoId = firestoreId;
@@ -559,23 +579,6 @@ function excluirLancamento(firestoreId) {
 function fecharModal() {
   deletandoId = null;
   document.getElementById('modalDel').classList.remove('open');
-}
-
-async function confirmarDelete() {
-  const idParaDeletar = deletandoId; // ← salva antes de fecharModal() zerar
-  fecharModal();
-  if (!idParaDeletar) return;
-  showLoading('Excluindo...');
-  try {
-    await colecao.doc(idParaDeletar).delete();
-    toast('🗑️ Lançamento excluído!', '#c62828');
-    renderLancamentos();
-  } catch (err) {
-    toast('❌ Erro ao excluir: ' + err.message, '#c62828');
-    console.error(err);
-  } finally {
-    hideLoading();
-  }
 }
 
 // ══════════════════════════
