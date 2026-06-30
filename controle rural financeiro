@@ -549,25 +549,30 @@ function editarLancamento(firestoreId) {
 }
 
 // ══════════════════════════
-//  EXCLUSÃO
+//  EXCLUSÃO — CORRIGIDO
 // ══════════════════════════
 function excluirLancamento(firestoreId) {
   deletandoId = firestoreId;
   document.getElementById('modalDel').classList.add('open');
 }
+
 function fecharModal() {
   deletandoId = null;
   document.getElementById('modalDel').classList.remove('open');
 }
+
 async function confirmarDelete() {
+  const idParaDeletar = deletandoId; // ← salva antes de fecharModal() zerar
   fecharModal();
+  if (!idParaDeletar) return;
   showLoading('Excluindo...');
   try {
-    await colecao.doc(deletandoId).delete();
+    await colecao.doc(idParaDeletar).delete();
     toast('🗑️ Lançamento excluído!', '#c62828');
     renderLancamentos();
   } catch (err) {
-    toast('❌ Erro ao excluir!', '#c62828');
+    toast('❌ Erro ao excluir: ' + err.message, '#c62828');
+    console.error(err);
   } finally {
     hideLoading();
   }
