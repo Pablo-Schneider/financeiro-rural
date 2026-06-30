@@ -406,17 +406,18 @@ let editandoId  = null;
 let deletandoId = null;
 
 // ══════════════════════════
-//  BOTÃO CONFIRMAR DELETE (via addEventListener — sem onclick no HTML)
+//  BOTÃO CONFIRMAR DELETE
 // ══════════════════════════
 document.getElementById('btnConfirmarDel').addEventListener('click', async function () {
+  if (!deletandoId) { fecharModal(); return; }
   const idParaDeletar = deletandoId;
   fecharModal();
-  if (!idParaDeletar) return;
   showLoading('Excluindo...');
   try {
     await colecao.doc(idParaDeletar).delete();
     toast('🗑️ Lançamento excluído!', '#c62828');
     renderLancamentos();
+    renderDashboard();
   } catch (err) {
     toast('❌ Erro ao excluir: ' + err.message, '#c62828');
     console.error(err);
